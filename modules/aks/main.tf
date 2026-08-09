@@ -7,13 +7,20 @@ resource "azurerm_kubernetes_cluster" "this" {
   dns_prefix         = var.dns_prefix
   kubernetes_version = var.kubernetes_version
 
+  automatic_upgrade_channel = "patch"
+  
   sku_tier = "Free"
+
+  azure_policy_enabled = true
+  local_account_disabled = true
 
   default_node_pool {
 
     name       = "system"
     vm_size    = "Standard_B2s"
     node_count = 1
+    max_pods = 50
+    only_critical_addons_enabled = true
 
     vnet_subnet_id = var.subnet_id
 
@@ -26,6 +33,10 @@ resource "azurerm_kubernetes_cluster" "this" {
   identity {
     type = "SystemAssigned"
   }
+
+key_vault_secrets_provider {
+  secret_rotation_enabled = true
+}
 
   linux_profile {
 
@@ -41,6 +52,8 @@ resource "azurerm_kubernetes_cluster" "this" {
     network_plugin = "azure"
 
     network_plugin_mode = "overlay"
+
+    network_policy = "azure"
 
     load_balancer_sku = "standard"
 
