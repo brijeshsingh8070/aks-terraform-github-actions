@@ -18,11 +18,6 @@ variable "subnet_id" {
   type = string
 }
 
-variable "kubernetes_version" {
-  type    = string
-  default = null
-}
-
 variable "node_pools" {
 
   description = "Additional AKS user node pools"
