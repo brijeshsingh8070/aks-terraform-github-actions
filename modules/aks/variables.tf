@@ -44,3 +44,7 @@ variable "ssh_public_key" {
 variable "tags" {
   type = map(string)
 }
+variable "api_server_authorized_ip_ranges" {
+  description = "Public IP ranges allowed to access AKS API server"
+  type        = list(string)
+}
