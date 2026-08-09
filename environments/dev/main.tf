@@ -14,8 +14,6 @@ module "network" {
   vnet_name          = var.vnet_name
   vnet_address_space = var.vnet_address_space
 
-  api_server_authorized_ip_ranges = var.api_server_authorized_ip_ranges
-
   subnets = var.subnets
 
   tags = var.tags
