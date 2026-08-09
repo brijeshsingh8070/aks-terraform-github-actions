@@ -7,6 +7,8 @@ resource "azurerm_kubernetes_cluster" "this" {
   dns_prefix         = var.dns_prefix
   kubernetes_version = var.kubernetes_version
 
+  role_based_access_control_enabled = true
+
   automatic_upgrade_channel = "patch"
   
   sku_tier = "Free"
