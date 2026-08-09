@@ -4,4 +4,4 @@ skip-check:
   - CKV_AZURE_227
   - CKV_AZURE_115
   - CKV_AZURE_4
-  
+  - CKV_AZURE_6

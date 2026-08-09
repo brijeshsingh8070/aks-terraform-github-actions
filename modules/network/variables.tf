@@ -26,3 +26,7 @@ variable "subnets" {
 variable "tags" {
   type = map(string)
 }
+variable "api_server_authorized_ip_ranges" {
+  description = "Authorized IP ranges for AKS API server"
+  type        = list(string)
+}
