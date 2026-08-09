@@ -3,10 +3,11 @@ name: "Terraform AKS Multi-Environment Pipeline"
 on:
   push:
     branches:
+      - "main"
       - "feature/*"
   pull_request:
     branches:
-      - main
+      - "main"
   workflow_dispatch:
     inputs:
       environment:
@@ -31,8 +32,50 @@ on:
 permissions:
   id-token: write
   contents: read
+  security-events: write
 
 jobs:
+  security-and-quality:
+    name: "Security & Code Quality Checks"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Format Check
+        id: fmt
+        run: terraform fmt -check -recursive
+
+      - name: Secret Scanning (Gitleaks)
+        uses: gitleaks/gitleaks-action@v8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.50.0
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint --recursive
+
+      - name: Run Trivy IaC Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          severity: "CRITICAL,HIGH"
+          exit-code: "0"
+
   matrix-prep:
     name: "Prepare Environment Matrix"
     runs-on: ubuntu-latest
@@ -53,7 +96,7 @@ jobs:
 
   terraform:
     name: "Terraform (${{ matrix.environment }})"
-    needs: matrix-prep
+    needs: [security-and-quality, matrix-prep]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -80,7 +123,7 @@ jobs:
           terraform_version: "1.7.0"
 
       - name: Azure Login (OIDC Federated Auth)
-        if: ${{ secrets.AZURE_CLIENT_SECRET != '' }}
+        if: ${{ env.ARM_CLIENT_ID != '' && env.ARM_CLIENT_SECRET == '' }}
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -88,14 +131,10 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Azure Login (Client Secret Auth Fallback)
-        if: ${{ secrets.AZURE_CLIENT_SECRET != '' }}
+        if: ${{ env.ARM_CLIENT_SECRET != '' }}
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Terraform Format Check
-        id: fmt
-        run: terraform fmt -check -recursive ../../
 
       - name: Terraform Init
         id: init
