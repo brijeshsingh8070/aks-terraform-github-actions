@@ -6,6 +6,9 @@ resource "azurerm_kubernetes_cluster" "this" {
 
   dns_prefix         = var.dns_prefix
   kubernetes_version = var.kubernetes_version
+  api_server_access_profile {
+  authorized_ip_ranges = var.api_server_authorized_ip_ranges
+}
 
   role_based_access_control_enabled = true
 
