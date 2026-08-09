@@ -146,4 +146,5 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        working-directory: environments/dev
+        run: terraform plan -input=false -var-file="terraform.tfvars" -out=tfplan
