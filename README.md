@@ -141,7 +141,8 @@ az aks start --name aks-preprod-cluster --resource-group rg-aks-preprod
 
 # Tear down environment resources completely when lab practice is finished
 cd environments/preprod && terraform destroy
-```
+`````
+## need to check
 
 ---
 
