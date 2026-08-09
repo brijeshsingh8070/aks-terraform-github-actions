@@ -1,50 +1,50 @@
-variable "name" {
-  type = string
-}
-
-variable "location" {
-  type = string
+variable "cluster_name" {
+  type        = string
+  description = "The name of the AKS cluster."
 }
 
 variable "resource_group_name" {
-  type = string
+  type        = string
+  description = "The name of the resource group in which to create the cluster."
+}
+
+variable "location" {
+  type        = string
+  description = "The Azure region where the AKS cluster will be created."
 }
 
 variable "dns_prefix" {
-  type = string
-}
-
-variable "subnet_id" {
-  type = string
-}
-
-variable "node_pools" {
-
-  description = "Additional AKS user node pools"
-
-  type = map(object({
-    name            = string
-    vm_size         = string
-    node_count      = number
-    min_count       = number
-    max_count       = number
-    mode            = string
-    os_disk_size_gb = number
-  }))
-}
-variable "kubernetes_version" {
-  description = "AKS Kubernetes version"
   type        = string
+  description = "DNS prefix specified when creating the managed cluster."
+  default     = null
 }
-variable "ssh_public_key" {
-  type      = string
-  sensitive = true
+
+variable "kubernetes_version" {
+  type        = string
+  description = "Kubernetes version for the cluster."
+  default     = null
+}
+
+variable "node_count" {
+  type        = number
+  description = "Number of nodes in the system node pool (default 2 for lab practice)."
+  default     = 2
+}
+
+variable "vm_size" {
+  type        = string
+  description = "VM SKU for the node pool (e.g. Standard_B2s for lowest cost)."
+  default     = "Standard_B2s"
+}
+
+variable "os_disk_size_gb" {
+  type        = number
+  description = "OS disk size in GB (30GB for cost optimization)."
+  default     = 30
 }
 
 variable "tags" {
-  type = map(string)
-}
-variable "api_server_authorized_ip_ranges" {
-  description = "Public IP ranges allowed to access AKS API server"
-  type        = list(string)
+  type        = map(string)
+  description = "Tags to assign to the AKS cluster resources."
+  default     = {}
 }

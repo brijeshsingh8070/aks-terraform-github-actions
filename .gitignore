@@ -1,6 +1,36 @@
-.terraform/
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
 *.tfstate
 *.tfstate.*
-tfplan
-*.tfplan
-terraform.tfvars
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which are likely to contain sensitive data, such as
+# password, private keys, and other secrets. these should not be committed to
+# version control.
+*.tfvars
+!terraform.tfvars.example
+
+# Override files should not be committed to version control
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override.tf.json.example if you want to include an example override file
+!override.tf.json.example
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
