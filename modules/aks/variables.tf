@@ -24,7 +24,8 @@ variable "kubernetes_version" {
 }
 
 variable "node_pools" {
-  description = "AKS node pools"
+
+  description = "Additional AKS user node pools"
 
   type = map(object({
     name            = string
@@ -36,7 +37,10 @@ variable "node_pools" {
     os_disk_size_gb = number
   }))
 }
-
+variable "kubernetes_version" {
+  description = "AKS Kubernetes version"
+  type        = string
+}
 variable "ssh_public_key" {
   type      = string
   sensitive = true

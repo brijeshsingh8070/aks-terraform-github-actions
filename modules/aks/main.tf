@@ -4,7 +4,8 @@ resource "azurerm_kubernetes_cluster" "this" {
   location            = var.location
   resource_group_name = var.resource_group_name
 
-  dns_prefix = var.dns_prefix
+  dns_prefix         = var.dns_prefix
+  kubernetes_version = var.kubernetes_version
 
   sku_tier = "Free"
 
@@ -56,17 +57,7 @@ module "node_pool" {
 
   source = "./node-pool"
 
-  for_each = {
-    application = {
-      name            = "apps"
-      vm_size         = "Standard_B2s"
-      node_count      = 1
-      min_count       = 1
-      max_count       = 1
-      mode            = "User"
-      os_disk_size_gb = 30
-    }
-  }
+  for_each = var.node_pools
 
   kubernetes_cluster_id = azurerm_kubernetes_cluster.this.id
 

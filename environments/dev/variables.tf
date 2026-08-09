@@ -34,11 +34,11 @@ variable "dns_prefix" {
 }
 
 variable "kubernetes_version" {
-  type    = string
-  default = null
+  type = string
 }
 
 variable "node_pools" {
+
   type = map(object({
     name            = string
     vm_size         = string
